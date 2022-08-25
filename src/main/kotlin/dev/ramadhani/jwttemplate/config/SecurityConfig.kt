@@ -30,10 +30,12 @@ class SecurityConfig(val authenticationFilter: AuthenticationFilter) {
     @Bean
     fun createSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http
+            .headers().frameOptions().disable().and()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
-            .antMatchers( "/**/login").permitAll()
+            .antMatchers("/**/h2-console/**").permitAll()
+            .antMatchers( "/**/login", "/**/register").permitAll()
             .anyRequest().authenticated().and()
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()

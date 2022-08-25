@@ -15,7 +15,7 @@ class JwtTemplateApplication(val userRepository: UserRepository, val encoder: Pa
 	}
 	override fun run(vararg args: String?) {
 		val encodedPassword = encoder.encode("test123")
-		val user = User("test", encodedPassword, "user")
+		val user = User("test", encodedPassword, "user@test.com", "test", "user", "USER" )
 		userRepository.save(user)
 		val users = userRepository.findAll() as List<User>
 		users.forEach {

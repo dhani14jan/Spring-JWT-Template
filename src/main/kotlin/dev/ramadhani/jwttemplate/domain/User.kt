@@ -11,6 +11,12 @@ class User(
     val username: String,
     @Column(nullable = false)
     val password: String,
+    @Column(nullable = false, unique = true)
+    val email: String,
+    @Column(nullable = false)
+    val firstname: String,
+    @Column(nullable = false)
+    val lastname: String,
     @Column(nullable = false)
     val role: String,
     @Id
