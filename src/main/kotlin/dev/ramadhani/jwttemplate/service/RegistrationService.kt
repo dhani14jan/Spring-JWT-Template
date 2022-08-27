@@ -17,7 +17,7 @@ class RegistrationService(val userRepository: UserRepository, val encoder: Passw
         return userRepository.findByUsername(username) != null
     }
 
-    fun registerUser(form: RegistrationForm) {
-        userRepository.save(User(form.username, encoder.encode(form.firstPassword), form.email, form.firstname, form.lastname, "USER"))
+    fun registerUser(form: RegistrationForm): User {
+        return userRepository.save(User(form.username, encoder.encode(form.firstPassword), form.email, form.firstname, form.lastname, "USER"))
     }
 }

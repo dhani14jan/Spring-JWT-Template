@@ -2,6 +2,7 @@ package dev.ramadhani.jwttemplate.controller
 
 import dev.ramadhani.jwttemplate.domain.AccountCredential
 import dev.ramadhani.jwttemplate.domain.RegistrationForm
+import dev.ramadhani.jwttemplate.publisher.RegistrationEventPublisher
 import dev.ramadhani.jwttemplate.service.JwtService
 import dev.ramadhani.jwttemplate.service.RegistrationService
 import org.springframework.http.HttpHeaders
@@ -17,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(path = ["/api/v1"])
-class AuthController(val jwtService: JwtService, val authenticationManager: AuthenticationManager, val registrationService: RegistrationService) {
+class AuthController(val jwtService: JwtService, val authenticationManager: AuthenticationManager, val registrationService: RegistrationService, val registrationEventPublisher: RegistrationEventPublisher) {
     @PostMapping("/login")
     fun login(@RequestBody credential: AccountCredential): ResponseEntity<Any> {
         val creds = UsernamePasswordAuthenticationToken(credential.username, credential.password)
         val auth: Authentication = authenticationManager.authenticate(creds)
+
+
         val jwt: String = jwtService.getToken(auth.name)
         return ResponseEntity.ok()
             .header(HttpHeaders.AUTHORIZATION, "Bearer $jwt")
@@ -52,7 +55,9 @@ class AuthController(val jwtService: JwtService, val authenticationManager: Auth
             return ResponseEntity.badRequest()
                 .body(result)
         }
-        registrationService.registerUser(form);
+        val user = registrationService.registerUser(form);
+        registrationEventPublisher.publishEvent(user)
+
         return ResponseEntity.ok()
             .body(mapOf("message" to "User is created!"))
     }

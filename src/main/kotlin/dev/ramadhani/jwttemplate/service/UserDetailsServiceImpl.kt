@@ -19,6 +19,8 @@ class UserDetailsServiceImpl(val userRepository: UserRepository): UserDetailsSer
                 .withUsername(it.username)
                 .password(it.password)
                 .roles(it.role)
+                .accountLocked(!it.activated)
+                .disabled(it.disabled)
                 .build()
         } ?: throw UsernameNotFoundException("User not found!")
     }
